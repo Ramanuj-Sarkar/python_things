@@ -30,11 +30,11 @@ def run_HQ9p2D(code_string: str, textfile = False):
             
             if char in '^v<>':
                 direction = char
-            elif char == 'H':
+            elif char == 'H': # Hello world
                 print('Hello world!')
-            elif char == 'Q':
+            elif char == 'Q': # quine
                 print(code_string)
-            elif char == '9':
+            elif char == '9': # 99 bottles of beer on the wall
                 for i in range(99, 2, -1):
                     print(f'{i} bottles of beer on the wall,\n'
                           f'{i} bottles of beer!\n'
@@ -49,7 +49,7 @@ def run_HQ9p2D(code_string: str, textfile = False):
                       "1 bottle of beer!\n"
                       "Take one down, pass it around,\n"
                       "No bottles of beer on the wall!")
-            elif char == '+':
+            elif char == '+': # increment some int
                 incrementer += 1
 
         # sets direction
