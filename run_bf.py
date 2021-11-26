@@ -13,9 +13,9 @@ def run_bf(code: str) -> None:
                 tape = [0] + tape
                 location += 1
         elif code[pointer] == '+':
-            tape[location] += 1
+            tape[location] = (tape[location] + 1) % 256
         elif code[pointer] == '-':
-            tape[location] -= 1
+            tape[location] = (tape[location] - 1) % 256
         elif code[pointer] == '.':
             print(chr(tape[location]),end='')
         elif code[pointer] == ',':
