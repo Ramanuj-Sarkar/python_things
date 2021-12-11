@@ -1,4 +1,4 @@
-ef run_bf(code: str) -> None:
+def run_bf(code: str) -> None:
     pointer = 0     # for instructions
     location = 0    # for tape
     tape = [0]
