@@ -1,18 +1,24 @@
-def run_bf(code: str) -> None:
+def run_bf(code: str, textfile = False) -> None:
     pointer = 0     # for instructions
     location = 0    # for tape
     tape = [0]
-    input_string = chr(10)  # allows multiple inputs to happen easily
+    input_string = ''  # allows multiple inputs to happen easily
 
-    # checks balance
-    balance = 0
-    for char in code:
+    if textfile:
+        code = ''.join(open(f'{code}', 'r').readlines())
+
+    corresponding_right_bracket = {}       # dictionary where keys are left brackets and values are right brackets
+    corresponding_left_bracket = {}  # dictionary where keys are right brackets and values are left brackets
+    bracket_stack = []     # acts as a stack for the last bracket
+    for num, char in enumerate(code):
         if char == '[':
-            balance += 1
+            bracket_stack.append(num)
         elif char == ']':
-            balance -= 1
-        assert balance >= 0, 'unmatched ]'
-    assert balance == 0, 'unmatched ['
+            assert len(bracket_stack) > 0, 'unmatched ]'
+            corresponding_left_bracket[num] = bracket_stack[-1]
+            corresponding_right_bracket[bracket_stack[-1]] = num
+            bracket_stack.pop()
+    assert len(bracket_stack) == 0, 'unmatched ['
 
     while pointer < len(code):
         if code[pointer] == '>':
@@ -31,27 +37,17 @@ def run_bf(code: str) -> None:
         elif code[pointer] == '.':
             print(chr(tape[location]),end='')
         elif code[pointer] == ',':
-            if input_string == chr(10):
-                input_string = input(">>") + chr(10)
-            if len(input_string) > 0 and ord(input_string[0]) != chr(10):
+            if input_string == '':
+                input_string = input(">>")
+            if len(input_string) > 0:
                 tape[location] = ord(input_string[0])
+            else:
+                tape[location] = 10
             input_string = input_string[1:]
         elif code[pointer] == '[':
             if tape[location] == 0:
-                nest_counter = 0
-                while code[pointer] != ']' or nest_counter >= 0:
-                    pointer += 1
-                    if code[pointer] == '[':
-                        nest_counter += 1
-                    elif code[pointer] == ']':
-                        nest_counter -= 1
+                pointer = corresponding_right_bracket[pointer]
         elif code[pointer] == ']':
             if tape[location] != 0:
-                nest_counter = 0
-                while code[pointer] != '[' or nest_counter >= 0:
-                    pointer -= 1
-                    if code[pointer] == ']':
-                        nest_counter += 1
-                    elif code[pointer] == '[':
-                        nest_counter -= 1
+                pointer = corresponding_left_bracket[pointer]
         pointer += 1
