@@ -1,5 +1,13 @@
+# This exists so I could represent a linear string as a tree
+# and represent a tree as a linear string
+# in terms of which order the characters would be seen.
+# It is disgusting, especially make_preorder.
+
 linear_number = 0
 
+# This takes a linear string
+# and turns it into a tree which would be read
+# the same way as the linear string using pre-order.
 def make_preorder(linear, treeshape=[''], treeshape_number=1):
     if treeshape == ['']:
         treeshape = [''] * len(linear)
@@ -15,6 +23,9 @@ def make_preorder(linear, treeshape=[''], treeshape_number=1):
         make_preorder(linear, treeshape, treeshape_number * 2 + 1)
     return ''.join(treeshape)
 
+# This takes in a string representing the tree
+# and reads it using pre-order
+# thereby resurrecting the original string.
 def decode_preorder(treestring, treestring_number=1):
     output_string = treestring[treestring_number-1]
     if treestring_number * 2 <= len(treestring):
