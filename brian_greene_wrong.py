@@ -29,28 +29,30 @@ It is possible that I am still wrong, but as you can see, the computer indicates
 that both scenarios give a 1/2 ratio of same : different.
 '''
 
-# original problem which Brian Greene got incorrect (probabil)
+# the order of the balls matters
 def random_func_1():
     ball_collection = [random.randint(1, 2) for x in range(3)]
     # print(ball_collection, end=' -> ')
-    first_ball = ball_collection.pop(random.randint(0, 2))
-    second_ball = ball_collection.pop(random.randint(0, 1))
+    first_ball = ball_collection.pop(random.randint(0, 2)) # this is where the first ball is picked
+    second_ball = ball_collection.pop(random.randint(0, 1)) # this is where the second ball is picked
     # print(ball_collection, first_ball, second_ball)
     return first_ball == second_ball
 
 
-# alternate problem which
+# alternate problem where the order of the balls
+# doesn't matter (instead of the balls being picked in an order
+# they are picked by ignoring one of the other balls)
 def random_func_2():
     ball_collection = [random.randint(1, 2) for x in range(3)]
     # print(ball_collection, end=' -> ')
-    non_chosen_ball = random.randint(0, 2)
+    non_chosen_ball = random.randint(0, 2) # both chosen balls are picked by ignoring this ball
     chosen_balls = [x for num, x in enumerate(ball_collection) if num != non_chosen_ball]
     # print(chosen_balls, non_chosen_ball)
     return chosen_balls[0] == chosen_balls[1]
 
 
 if __name__ == "__main__":
-    print('Case 1: Order Does Not Matter (Original Problem)')
+    print('Case 1: Order Does Not Matter')
     same_different_dictionary = {'Same': 0, 'Different': 0}
     for _ in range(10000):
         are_same = random_func_2()
