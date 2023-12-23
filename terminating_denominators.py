@@ -27,8 +27,6 @@ def terminating_senary_denominators(maximum: int) -> list:
 
 
 if __name__ == '__main__':
-    print(pointless_bf_compiler('[[[>>>+++<<<---]]]'))
-
     value = 10000000
 
     print(len(terminating_binary_denominators(value)))
