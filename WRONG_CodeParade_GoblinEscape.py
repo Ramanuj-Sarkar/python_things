@@ -1,5 +1,6 @@
 # Originally created by HackerPoet aka Code Parade
 # As of right now, this runs in Python 2.7.
+# It crashes in Python 3.10.
 # I intend to allow this to run in around Python 3.10.
 
 import pygame, sys, math
@@ -16,6 +17,10 @@ gspeed_ix = 0
 speed_mult = 3.0
 clicking = False
 
+
+'''
+
+UNTESTED CODE
 def restart():
 	global goblin, boatx, boaty, clicking
 	goblin = 0.0
@@ -121,3 +126,4 @@ while True:
 	detectWin()
 	redraw()
 	clock.tick(60)
+ '''
