@@ -1,6 +1,6 @@
 # Originally created by Aprataksh
-# Changes: global variables gone
-# Future changes: variable length, better functions, better variable names
+# Changes: global variables gone, print has less changing state
+# Future changes: padding in print_mines_layout(), variable length, better functions, better variable names
 
 
 # Importing packages
@@ -10,35 +10,29 @@ import os
 
 # Printing the Minesweeper Layout
 def print_mines_layout(mine_values, n):
-    print()
-    print("\t\t\tMINESWEEPER\n")
+    print("\n\t\t\tMINESWEEPER\n")
 
-    st = "   "
-    for i in range(n):
-        st = st + "     " + str(i + 1)
-    print(st)
+    # Top Row with Numbers
+    print(" " * 3 + ''.join([' ' * 5 + str(i + 1) for i in range(n)]))
+
+    # Top of Minesweeper Box
+    print(" " * 6 + "______" * n)
 
     for r in range(n):
-        st = "     "
-        if r == 0:
-            for col in range(n):
-                st = st + "______"
-            print(st)
+        # Beginning part without number
+        st = ' ' * 5
 
-        st = "     "
-        for col in range(n):
-            st = st + "|     "
-        print(st + "|")
+        # Beginning part with number
+        number_st = " " * 2 + str(r + 1) + " " * 2
 
-        st = "  " + str(r + 1) + "  "
-        for col in range(n):
-            st = st + "|  " + str(mine_values[r][col]) + "  "
-        print(st + "|")
+        # Middle part with mine / no mine indicator
+        middles = ''.join(["|  " + str(mine_values[r][col]) + "  " for col in range(n)])
 
-        st = "     "
-        for col in range(n):
-            st = st + "|_____"
-        print(st + '|')
+        print(st + "|     " * n + "|")
+
+        print(number_st + middles + "|")
+
+        print(st + "|_____" * n + '|')
 
     print()
 
@@ -179,7 +173,7 @@ def show_mines(mine_values, numbers, n):
 if __name__ == "__main__":
 
     # Size of grid
-    actual_n = 8
+    actual_n = 9
     # xlimit = 8
     # ylimit = 8
 
@@ -204,6 +198,8 @@ if __name__ == "__main__":
 
     # Variable for maintaining Game Loop
     game_running = True
+
+    print_mines_layout(actual_mine_values, actual_n)
 
     # The GAME LOOP
     while game_running:
