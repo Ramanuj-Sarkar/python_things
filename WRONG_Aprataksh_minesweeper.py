@@ -4,11 +4,11 @@ Originally created by Aprataksh
 Changes
 global variables gone
 print has less changing state
-set_mines works better
+set_mines grows O(mines) and is more consistent
+set_values grows O(mines)
 
 Future changes
-use value from set_mines in set_values
-padding in print_mines_layout()
+padding in print_mines_layout() for values > 10
 variable length
 better functions
 better variable names
@@ -52,51 +52,56 @@ def print_mines_layout(mine_val, n):
     print()
 
 
-# Function for setting up Mines
+# Function for setting up mines
 def set_mines(numbers, minelist, n):
     for pos in minelist:
         # Generating row and column from the position
         r = pos // n
         col = pos % n
 
-        # Place the mine
+        # set the mine to -1
         numbers[r][col] = -1
 
 
 # Function for setting up the other grid values
 def set_values(numbers, minelist, n):
     # Loop for counting each cell value
-    for r in range(n):
-        for col in range(n):
-
-            # Skip, if it contains a mine
-            if numbers[r][col] == -1:
-                continue
-
-            # Check up
-            if r > 0 and numbers[r - 1][col] == -1:
-                numbers[r][col] = numbers[r][col] + 1
-            # Check down
-            if r < n - 1 and numbers[r + 1][col] == -1:
-                numbers[r][col] = numbers[r][col] + 1
-            # Check left
-            if col > 0 and numbers[r][col - 1] == -1:
-                numbers[r][col] = numbers[r][col] + 1
-            # Check right
-            if col < n - 1 and numbers[r][col + 1] == -1:
-                numbers[r][col] = numbers[r][col] + 1
-            # Check top-left
-            if r > 0 and col > 0 and numbers[r - 1][col - 1] == -1:
-                numbers[r][col] = numbers[r][col] + 1
-            # Check top-right
-            if r > 0 and col < n - 1 and numbers[r - 1][col + 1] == -1:
-                numbers[r][col] = numbers[r][col] + 1
-            # Check below-left
-            if r < n - 1 and col > 0 and numbers[r + 1][col - 1] == -1:
-                numbers[r][col] = numbers[r][col] + 1
-            # Check below-right
-            if r < n - 1 and col < n - 1 and numbers[r + 1][col + 1] == -1:
-                numbers[r][col] = numbers[r][col] + 1
+    for pos in minelist:
+        # generate row and column from position
+        r = pos // n
+        col = pos % n
+        
+        if r > 0:
+            # add to top
+            numbers[r-1][col] = numbers[r-1][col] + 1
+            if col > 0:
+                # add to top left
+                numbers[r-1][col-1] = numbers[r-1][col-1] + 1
+            if col < n-1:
+                # add to top right
+                numbers[r-1][col+1] = numbers[r-1][col+1] + 1
+        
+        if r < n - 1:
+            # add to bottom
+            numbers[r+1][col] = numbers[r+1][col] + 1
+            if col > 0:
+                # add to bottom left
+                numbers[r+1][col-1] = numbers[r+1][col-1] + 1
+            if col < n-1:
+                # add to bottom right
+                numbers[r+1][col+1] = numbers[r+1][col+1] + 1
+        
+        if col > 0:
+            # add to left
+            numbers[r][col-1] = numbers[r][col-1] + 1
+        if col < n-1:
+            # add to right
+            numbers[r][col+1] = numbers[r][col+1] + 1
+    
+    # set the mine to -1
+    set_mines(numbers, minelist, n)
+        
+        
 
 
 # Recursive function to display all zero-valued neighbours
@@ -108,8 +113,10 @@ def neighbours(mine_values, numbers, vis, n, r, col):
         # Mark the cell visited
         vis.append([r, col])
 
-        # If the cell is zero-valued
-        if numbers[r][col] == 0:
+        # If the cell is not zero-valued
+        if numbers[r][col] != 0:
+            mine_values[r][col] = numbers[r][col]
+        else: # If the cell is zero-valued
 
             # Display it to the user
             mine_values[r][col] = numbers[r][col]
@@ -117,24 +124,22 @@ def neighbours(mine_values, numbers, vis, n, r, col):
             # Recursive calls for the neighbouring cells
             if r > 0:
                 neighbours(mine_values, numbers, vis, n, r - 1, col)
+                if col > 0:
+                    neighbours(mine_values, numbers, vis, n, r - 1, col - 1)
+                if col < n - 1:
+                    neighbours(mine_values, numbers, vis, n, r - 1, col + 1)
+                
             if r < n - 1:
                 neighbours(mine_values, numbers, vis, n, r + 1, col)
+                if col > 0:
+                    neighbours(mine_values, numbers, vis, n, r + 1, col - 1)
+                if col < n - 1:
+                    neighbours(mine_values, numbers, vis, n, r + 1, col + 1)
+                
             if col > 0:
                 neighbours(mine_values, numbers, vis, n, r, col - 1)
             if col < n - 1:
                 neighbours(mine_values, numbers, vis, n, r, col + 1)
-            if r > 0 and col > 0:
-                neighbours(mine_values, numbers, vis, n, r - 1, col - 1)
-            if r > 0 and col < n - 1:
-                neighbours(mine_values, numbers, vis, n, r - 1, col + 1)
-            if r < n - 1 and col > 0:
-                neighbours(mine_values, numbers, vis, n, r + 1, col - 1)
-            if r < n - 1 and col < n - 1:
-                neighbours(mine_values, numbers, vis, n, r + 1, col + 1)
-
-        # If the cell is not zero-valued
-        if numbers[r][col] != 0:
-            mine_values[r][col] = numbers[r][col]
 
 
 # Function for clearing the terminal
@@ -176,7 +181,7 @@ def show_mines(mine_values, numbers, n):
 
 def main():
     # Size of grid
-    actual_n = 7
+    actual_n = 9
     # xlimit = 8
     # ylimit = 8
 
@@ -191,10 +196,8 @@ def main():
     flags = []
     
     # creates list of positions for mines
-    mines_list = random.sample(range(0, actual_n * actual_n - 1), actual_mines_no)
-
-    # Set the mines
-    set_mines(actual_numbers, mines_list, actual_n)
+    # they can't be in the top left corner
+    mines_list = random.sample(range(1, actual_n * actual_n - 1), actual_mines_no)
 
     # Set the values
     set_values(actual_numbers, mines_list, actual_n)
@@ -203,9 +206,7 @@ def main():
     instructions()
 
     # Variable for maintaining Game Loop
-    game_running = False
-    
-    print(actual_numbers)
+    game_running = True
 
     # The GAME LOOP
     while game_running:
@@ -324,6 +325,7 @@ def main():
 
         # Check for game completion
         if (check_over(actual_mine_values, actual_mines_no, actual_n)):
+            clear()
             show_mines(actual_mine_values, actual_numbers, actual_n)
             print_mines_layout(actual_mine_values, actual_n)
             print("Congratulations!!! YOU WIN")
@@ -334,3 +336,4 @@ def main():
 if __name__ == "__main__":
     main()
 
+# fin
