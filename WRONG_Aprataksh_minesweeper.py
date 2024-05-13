@@ -1,7 +1,22 @@
-# Originally created by Aprataksh
-# Changes: global variables gone, print has less changing state
-# Future changes: padding in print_mines_layout(), variable length, better functions, better variable names
+'''
+Originally created by Aprataksh
 
+Changes
+global variables gone
+print has less changing state
+set_mines works better
+
+Future changes
+use value from set_mines in set_values
+padding in print_mines_layout()
+variable length
+better functions
+better variable names
+
+Needs special coaxing on Mac
+You have to change some variable or it won't clear the screen between turns
+You can just use Spyder in Anaconda, it works there for some reason
+'''
 
 # Importing packages
 import random
@@ -9,7 +24,7 @@ import os
 
 
 # Printing the Minesweeper Layout
-def print_mines_layout(mine_values, n):
+def print_mines_layout(mine_val, n):
     print("\n\t\t\tMINESWEEPER\n")
 
     # Top Row with Numbers
@@ -26,7 +41,7 @@ def print_mines_layout(mine_values, n):
         number_st = " " * 2 + str(r + 1) + " " * 2
 
         # Middle part with mine / no mine indicator
-        middles = ''.join(["|  " + str(mine_values[r][col]) + "  " for col in range(n)])
+        middles = ''.join(["|  " + str(mine_val[r][col]) + "  " for col in range(n)])
 
         print(st + "|     " * n + "|")
 
@@ -38,26 +53,18 @@ def print_mines_layout(mine_values, n):
 
 
 # Function for setting up Mines
-def set_mines(numbers, mines_no, n):
-    # Track of number of mines already set up
-    count = 0
-    while count < mines_no:
+def set_mines(numbers, minelist, n):
+    for pos in minelist:
+        # Generating row and column from the position
+        r = pos // n
+        col = pos % n
 
-        # Random number from all possible grid positions
-        val = random.randint(0, n * n - 1)
-
-        # Generating row and column from the number
-        r = val // n
-        col = val % n
-
-        # Place the mine, if it doesn't already have one
-        if numbers[r][col] != -1:
-            count = count + 1
-            numbers[r][col] = -1
+        # Place the mine
+        numbers[r][col] = -1
 
 
 # Function for setting up the other grid values
-def set_values(numbers, n):
+def set_values(numbers, minelist, n):
     # Loop for counting each cell value
     for r in range(n):
         for col in range(n):
@@ -156,10 +163,7 @@ def check_over(mine_values, mines_no, n):
                 count = count + 1
 
     # Count comparison
-    if count == n * n - mines_no:
-        return True
-    else:
-        return False
+    return count == n * n - mines_no
 
 
 # Display all the mine locations
@@ -170,15 +174,14 @@ def show_mines(mine_values, numbers, n):
                 mine_values[r][col] = 'M'
 
 
-if __name__ == "__main__":
-
+def main():
     # Size of grid
-    actual_n = 9
+    actual_n = 7
     # xlimit = 8
     # ylimit = 8
 
     # Number of mines
-    actual_mines_no = 2
+    actual_mines_no = 4
 
     # The actual values of the grid
     actual_numbers = [[0 for y in range(actual_n)] for x in range(actual_n)]
@@ -186,20 +189,23 @@ if __name__ == "__main__":
     actual_mine_values = [[' ' for y in range(actual_n)] for x in range(actual_n)]
     # The positions that have been flagged
     flags = []
+    
+    # creates list of positions for mines
+    mines_list = random.sample(range(0, actual_n * actual_n - 1), actual_mines_no)
 
     # Set the mines
-    set_mines(actual_numbers, actual_mines_no, actual_n)
+    set_mines(actual_numbers, mines_list, actual_n)
 
     # Set the values
-    set_values(actual_numbers, actual_n)
+    set_values(actual_numbers, mines_list, actual_n)
 
     # Display the instructions
     instructions()
 
     # Variable for maintaining Game Loop
-    game_running = True
-
-    print_mines_layout(actual_mine_values, actual_n)
+    game_running = False
+    
+    print(actual_numbers)
 
     # The GAME LOOP
     while game_running:
@@ -222,7 +228,7 @@ if __name__ == "__main__":
 
         # Flag input
         elif len(inp) == 3:
-            if inp[2] != 'F' and inp[2] != 'f':
+            if inp[2].upper() != 'F':
                 clear()
                 print("Wrong Input!")
                 instructions()
@@ -324,3 +330,7 @@ if __name__ == "__main__":
             game_running = False
             continue
         clear()
+
+if __name__ == "__main__":
+    main()
+
