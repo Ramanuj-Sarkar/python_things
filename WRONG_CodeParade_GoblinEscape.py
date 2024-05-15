@@ -20,7 +20,9 @@ clicking = False
 
 '''
 
-UNTESTED CODE
+DO NOT RUN THIS
+TRY TO CREATE A GAME THAT DOESN'T CRASH
+BEFORE IMPLEMENTING ANY OF THIS
 def restart():
 	global goblin, boatx, boaty, clicking
 	goblin = 0.0
