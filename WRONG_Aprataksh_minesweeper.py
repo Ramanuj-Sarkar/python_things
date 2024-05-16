@@ -6,9 +6,12 @@ global variables gone
 print has less changing state
 set_mines grows O(mines) and is more consistent
 set_values grows O(mines)
+1,1 never has a mine
+boards of 10 or larger are okay (boards larger than 1000 really won't be)
+repeated stuff is taken away
 
 Future changes
-padding in print_mines_layout() for values > 10
+different row and column?
 variable length
 better functions
 better variable names
@@ -26,19 +29,23 @@ import os
 # Printing the Minesweeper Layout
 def print_mines_layout(mine_val, n):
     print("\n\t\t\tMINESWEEPER\n")
+    
+    pad = len(str(n)) - 1
 
-    # Top Row with Numbers
-    print(" " * 3 + ''.join([' ' * 5 + str(i + 1) for i in range(n)]))
+    # row with Numbers
+    bookend = [" " * (6 - len(str(i))) + str(i + 1) for i in range(n)]
+    print(" " * (3 + pad) + ''.join(bookend))
 
     # Top of Minesweeper Box
-    print(" " * 6 + "______" * n)
+    print(" " * (6 + pad) + "______" * n)
 
     for r in range(n):
         # Beginning part without number
-        st = ' ' * 5
+        st = ' ' * (5 + pad)
+        strr = str(r + 1)
 
         # Beginning part with number
-        number_st = " " * 2 + str(r + 1) + " " * 2
+        number_st = " " * (3 + pad - len(strr)) + strr + " " * 2
 
         # Middle part with mine / no mine indicator
         middles = ''.join(["|  " + str(mine_val[r][col]) + "  " for col in range(n)])
@@ -49,7 +56,7 @@ def print_mines_layout(mine_val, n):
 
         print(st + "|_____" * n + '|')
 
-    print()
+    print(" " * (3 + pad) + ''.join(bookend) + '\n')
 
 
 # Function for setting up mines
@@ -181,26 +188,26 @@ def show_mines(mine_values, numbers, n):
 
 def main():
     # Size of grid
-    actual_n = 9
+    n = 9
     # xlimit = 8
     # ylimit = 8
 
     # Number of mines
-    actual_mines_no = 4
+    mines_no = 4
 
     # The actual values of the grid
-    actual_numbers = [[0 for y in range(actual_n)] for x in range(actual_n)]
+    numbers = [[0 for y in range(n)] for x in range(n)]
     # The apparent values of the grid
-    actual_mine_values = [[' ' for y in range(actual_n)] for x in range(actual_n)]
+    apparent = [[' ' for y in range(n)] for x in range(n)]
     # The positions that have been flagged
     flags = []
     
     # creates list of positions for mines
     # they can't be in the top left corner
-    mines_list = random.sample(range(1, actual_n * actual_n - 1), actual_mines_no)
+    mines_list = random.sample(range(1, n * n - 1), mines_no)
 
     # Set the values
-    set_values(actual_numbers, mines_list, actual_n)
+    set_values(numbers, mines_list, n)
 
     # Display the instructions
     instructions()
@@ -210,7 +217,7 @@ def main():
 
     # The GAME LOOP
     while game_running:
-        print_mines_layout(actual_mine_values, actual_n)
+        print_mines_layout(apparent, n)
 
         # Input from the user
         inp = input("Enter row number followed by space and column number = ").split()
@@ -245,38 +252,38 @@ def main():
                 continue
 
             # Sanity checks
-            if val[0] > actual_n or val[0] < 1 or val[1] > actual_n or val[1] < 1:
+            if val[0] > n or val[0] < 1 or val[1] > n or val[1] < 1:
                 clear()
                 print("Wrong input!")
                 instructions()
                 continue
 
             # Get row and column numbers
-            actual_r = val[0] - 1
-            actual_col = val[1] - 1
+            r = val[0] - 1
+            col = val[1] - 1
 
             # If cell already been flagged
-            if [actual_r, actual_col] in flags:
+            if [r, col] in flags:
                 clear()
                 print("Flag already set")
                 continue
 
             # If cell already been displayed
-            if actual_mine_values[actual_r][actual_col] != ' ':
+            if apparent[r][col] != ' ':
                 clear()
                 print("Value already known")
                 continue
 
             # Check the number for flags
-            if len(flags) < actual_mines_no:
+            if len(flags) < mines_no:
                 clear()
                 print("Flag set")
 
                 # Adding flag to the list
-                flags.append([actual_r, actual_col])
+                flags.append([r, col])
 
                 # Set the flag for display
-                actual_mine_values[actual_r][actual_col] = 'F'
+                apparent[r][col] = 'F'
                 continue
             else:
                 clear()
@@ -290,44 +297,42 @@ def main():
             continue
 
         # Sanity checks
-        if val[0] > actual_n or val[0] < 1 or val[1] > actual_n or val[1] < 1:
+        if val[0] > n or val[0] < 1 or val[1] > n or val[1] < 1:
             clear()
             print("Wrong Input!")
             instructions()
             continue
 
         # Get row and column number
-        actual_r = val[0] - 1
-        actual_col = val[1] - 1
+        r = val[0] - 1
+        col = val[1] - 1
 
         # Unflag the cell if already flagged
-        if [actual_r, actual_col] in flags:
-            flags.remove([actual_r, actual_col])
+        if [r, col] in flags:
+            flags.remove([r, col])
 
         # If landing on a mine --- GAME OVER
-        if actual_numbers[actual_r][actual_col] == -1:
-            actual_mine_values[actual_r][actual_col] = 'M'
-            show_mines(actual_mine_values, actual_numbers, actual_n)
-            print_mines_layout(actual_mine_values, actual_n)
+        if numbers[r][col] == -1:
+            show_mines(apparent, numbers, n)
+            print_mines_layout(apparent, n)
             print("Landed on a mine. GAME OVER!!!!!")
             game_running = False
             continue
 
         # If landing on a cell with 0 mines in neighboring cells
-        elif actual_numbers[actual_r][actual_col] == 0:
+        elif numbers[r][col] == 0:
             vis = []
-            actual_mine_values[actual_r][actual_col] = '0'
-            neighbours(actual_mine_values, actual_numbers, vis, actual_n, actual_r, actual_col)
+            neighbours(apparent, numbers, vis, n, r, col)
 
         # If selecting a cell with at least 1 mine in neighboring cells
         else:
-            actual_mine_values[actual_r][actual_col] = str(actual_numbers[actual_r][actual_col])
+            apparent[r][col] = str(numbers[r][col])
 
         # Check for game completion
-        if (check_over(actual_mine_values, actual_mines_no, actual_n)):
+        if (check_over(apparent, mines_no, n)):
             clear()
-            show_mines(actual_mine_values, actual_numbers, actual_n)
-            print_mines_layout(actual_mine_values, actual_n)
+            show_mines(apparent, numbers, n)
+            print_mines_layout(apparent, n)
             print("Congratulations!!! YOU WIN")
             game_running = False
             continue
