@@ -2,8 +2,11 @@ import re
 
 
 def danicb_encoder(query_string):
-    assert sum(1 for x in query_string if ord('a') > ord(x) or ord('z') < ord(x)) == 0, "A valid text contains only" \
-                                                                                  "lowercase letters between a and z."
+    string_sum = sum(1 for x in query_string if ord('a') > ord(x) or ord('z') < ord(x))
+    
+    if string_sum != 0:
+        raise ValueError("A valid text contains only lowercase letters between a and z.")
+    
     output = ''
     # turns wimpmode text into required danicb input
     for char in query_string:
@@ -18,7 +21,11 @@ def danicb_encoder(query_string):
 
 
 def danicb_decoder(query_string):
-    assert sum(1 for x in query_string if x != 'f' and x != ' ') == 0, "A valid input contains only 'f' and ' '."
+    string_sum = sum(1 for x in query_string if x != 'f' and x != ' ')
+    
+    if string_sum != 0:
+        raise ValueError("A valid input contains only 'f' and '.'")
+    
     output = ''
     # turns required danicb input text into wimpmode text
     regex_output = re.findall(r"(?:f{1,5} f{1,5})|f{6}", query_string)
