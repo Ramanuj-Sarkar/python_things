@@ -1,5 +1,5 @@
 '''
-Originally created by Aprataksh
+Originally created by Aprataksh at https://github.com/Aprataksh/Minesweeper
 
 Changes
 global variables gone
