@@ -9,7 +9,7 @@ answer = input("This requires money. It will raise an error if no money is avail
 if answer != 'Y':
     quit()
 
-moneymaker = input("So do you have the money?")
+moneymaker = input("If you have the money, give me the key:")
 
 client = OpenAI(
   api_key=moneymaker
