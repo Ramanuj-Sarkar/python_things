@@ -18,7 +18,6 @@ better variable names
 
 Needs special coaxing on Mac
 You have to change some variable or it won't clear the screen between turns
-You can just use Spyder in Anaconda, it works there for some reason
 '''
 
 # Importing packages
