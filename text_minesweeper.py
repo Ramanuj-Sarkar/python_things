@@ -1,5 +1,5 @@
 '''
-Originally created by Aprataksh at https://github.com/Aprataksh/Minesweeper
+Originally created by Aprataksh
 
 Changes
 global variables gone
@@ -186,14 +186,11 @@ def show_mines(mine_values, numbers, n):
                 mine_values[r][col] = 'M'
 
 
-def main():
-    # Size of grid
-    n = 9
-    # xlimit = 8
-    # ylimit = 8
-
-    # Number of mines
-    mines_no = 4
+def main(n=9, mines_no=4):
+    '''
+    n = size of grid
+    mines_no = number of mines
+    '''
 
     # The actual values of the grid
     numbers = [[0 for y in range(n)] for x in range(n)]
@@ -339,6 +336,4 @@ def main():
         clear()
 
 if __name__ == "__main__":
-    main()
-
-# fin
+    main(20, 40)
