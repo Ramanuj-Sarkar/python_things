@@ -1,8 +1,7 @@
 # When you took primes to the modulo of different numbers, which ones have proportionally the fewest modulo values?
 # I learned numbers like 210 and 1950 seem to consistently put primes in 1/4 of their modulo values.
-# That said, I didn't include an exhaustive list of primes.
-# Larger numbers are more likely to have artificially lower values.
-# It's also possible that eventually, even numbers like 210 will put primes in all of their modulo values.
+# Eventually, I learned about totatives and that the fraction of totatives can be arbitrarily small.
+# Primorials which consist of many primes can have arbitrarily small totative percentages, if I understand correctly.
 
 
 def intify(x):
