@@ -1,7 +1,8 @@
 # With n coins, you can add a number from 0 to 2^n - 1.
 def binary_coin_flip(numbers: int):
     grouped_coins = []
-    assert numbers >= 0, 'A negative number is not a valid input.'
+    if numbers < 0:
+        raise ValueError('A negative number is not a valid input.')
     while numbers != 0:
         coins = 1
         while ((2 ** (coins + 1)) - 1) <= numbers:
