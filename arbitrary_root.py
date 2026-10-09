@@ -2,7 +2,8 @@
 # to dig digits
 # only works with roots greater than or equal to 2
 def arb_root(num, root, dig=10):
-    assert root >= 2, "The root must be greater than or equal to 2."
+    if root < 2:
+        raise ValueError("The root must be greater than or equal to 2.")
 
     ans = 0
 
