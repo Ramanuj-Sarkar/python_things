@@ -1,7 +1,7 @@
 def balanced_to_unbalanced_ternary(number) -> str:
     backwards_number = str(number)[::-1].rstrip('0')
-    assert set(backwards_number).issubset({'0','1','2'}),\
-        'This number should contain only the characters 0, 1, or 2.'
+    if not set(backwards_number).issubset({'0','1','2'}):
+        raise ValueError('This number should contain only the characters 0, 1, or 2.')
 
     if backwards_number == '':
         return '0'
