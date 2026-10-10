@@ -30,8 +30,10 @@ def main():
             password=""
         )
 
-        assert connection.user != '', "Please enter the username."
-        assert connection.password != '', "Please enter the password."
+        if connection.user == '':
+            raise ValueError("Please enter the username.")
+        if connection.password == '':
+            raise ValueError("Please enter the password.")
 
         cursor = connection.cursor()
 
