@@ -19,22 +19,23 @@ messes = []
 system_msg = input("What type of chatbot would you like to create?\n")
 messes.append({"role": "system", "content": system_msg})
 
-times = 0
+TIMES = 0
+MAXIMUM = 100
 
 print("Your new assistant is ready!\n"
-      f"You can only ask {100 - times} or fewer questions.")
+      f"You can only ask {MAXIMUM - TIMES} or fewer questions.")
 
 message = input()
-while times < 100 and message != 'quit()':
+while TIMES < 100 and message != 'quit()':
     messes.append({"role": "user", "content": message})
     response = client.chat.completions.create(model="gpt-3.5-turbo",
                                               messages=messes)
     reply = response.choices[0].message.content
     messes.append({"role": "assistant", "content": reply})
     print("\n" + reply + "\n")
-    times += 1
+    TIMES += 1
     message = input()
-    if times == 100:
+    if TIMES == MAXIMUM:
         print('Thank you for using this chatbot.\n'
-              f'The {times} message limit has been reached.\n'
-              'You can try again or change the "times" variable in the code.')
+              f'The {TIMES} message limit has been reached.\n'
+              'You can start this again or change the TIMES and MAXIMUM variables in the code.')
